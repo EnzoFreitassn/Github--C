@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Mural de Recados</title>
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --card: #fffdf7;
+      --accent: #e07a5f;
+      --text: #3d405b;
+    }
+    * { box-sizing: border-box; }
+    body {
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      margin: 0;
+      padding: 2rem 1rem;
+      display: flex;
+      justify-content: center;
+    }
+    main { width: 100%; max-width: 640px; }
+    h1 { text-align: center; margin-bottom: 0.25rem; }
+    p.sub { text-align: center; color: #8a8a9e; margin-top: 0; }
+    #mural {
+      display: grid;
+      gap: 1rem;
+      margin-top: 2rem;
+    }
+    .recado {
+      background: var(--card);
+      border-left: 5px solid var(--accent);
+      border-radius: 10px;
+      padding: 1rem 1.25rem;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    }
+    .recado strong { color: var(--accent); }
+    footer { text-align: center; margin-top: 2.5rem; color: #8a8a9e; font-size: 0.85rem; }
+  </style>
+</head>
+<body>
+  <main>
+    <h1>📋 Mural de Recados</h1>
+    <p class="sub">Edite <code>participantes.md</code> para aparecer aqui!</p>
+    <div id="mural">Carregando recados...</div>
+    <footer>Feito para aprender Git &amp; GitHub 🚀</footer>
+  </main>
+
+  <script>
+    // Lê o arquivo participantes.md e monta o mural.
+    fetch('participantes.md')
+      .then(function (r) { return r.text(); })
+      .then(function (texto) {
+        var mural = document.getElementById('mural');
+        mural.innerHTML = '';
+        // Pega só as linhas que começam com "- " (os participantes).
+        var linhas = texto.split('\n').filter(function (l) {
+          return l.trim().indexOf('- ') === 0;
+        });
+        if (linhas.length === 0) {
+          mural.textContent = 'Nenhum recado ainda. Seja o primeiro!';
+          return;
+        }
+        linhas.forEach(function (linha) {
+          var conteudo = linha.trim().slice(2); // remove o "- "
+          // Converte **texto** em negrito simples.
+          var html = conteudo.replace(/\*\*(.+?)\*\*/g, '<strong>$1</strong>');
+          var div = document.createElement('div');
+          div.className = 'recado';
+          div.innerHTML = html;
+          mural.appendChild(div);
+        });
+      })
+      .catch(function () {
+        document.getElementById('mural').textContent =
+          'Abra este arquivo por um servidor local para carregar os recados.';
+      });
+  </script>
+</body>
+</html>
